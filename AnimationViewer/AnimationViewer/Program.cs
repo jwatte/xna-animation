@@ -1,0 +1,19 @@
+using System;
+
+namespace AnimationViewer
+{
+  static class Program
+  {
+    /// <summary>
+    /// The main entry point for the application.
+    /// </summary>
+    static void Main(string[] args)
+    {
+      using (AnimationViewer game = new AnimationViewer())
+      {
+        game.Run();
+      }
+    }
+  }
+}
+

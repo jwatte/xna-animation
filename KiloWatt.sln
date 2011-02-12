@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationViewer", "AnimationViewer\AnimationViewer\AnimationViewer.csproj", "{062EA074-BEBE-46FE-A575-90CC53C0EDC6}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "AnimationViewerContent", "AnimationViewer\AnimationViewerContent\AnimationViewerContent.contentproj", "{B5C3363A-B4B4-46E7-8AB3-50F03A38E51B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Animation", "Animation\Animation.csproj", "{52C184E9-40FF-4FE8-B0D8-765F27D33FEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pipeline", "Pipeline\Pipeline.csproj", "{0CAB8708-7AA9-4A23-A1E6-E5E490A945CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{062EA074-BEBE-46FE-A575-90CC53C0EDC6}.Debug|x86.ActiveCfg = Debug|x86
+		{062EA074-BEBE-46FE-A575-90CC53C0EDC6}.Debug|x86.Build.0 = Debug|x86
+		{062EA074-BEBE-46FE-A575-90CC53C0EDC6}.Release|x86.ActiveCfg = Release|x86
+		{062EA074-BEBE-46FE-A575-90CC53C0EDC6}.Release|x86.Build.0 = Release|x86
+		{B5C3363A-B4B4-46E7-8AB3-50F03A38E51B}.Debug|x86.ActiveCfg = Debug|x86
+		{B5C3363A-B4B4-46E7-8AB3-50F03A38E51B}.Release|x86.ActiveCfg = Release|x86
+		{52C184E9-40FF-4FE8-B0D8-765F27D33FEC}.Debug|x86.ActiveCfg = Debug|x86
+		{52C184E9-40FF-4FE8-B0D8-765F27D33FEC}.Debug|x86.Build.0 = Debug|x86
+		{52C184E9-40FF-4FE8-B0D8-765F27D33FEC}.Release|x86.ActiveCfg = Release|x86
+		{52C184E9-40FF-4FE8-B0D8-765F27D33FEC}.Release|x86.Build.0 = Release|x86
+		{0CAB8708-7AA9-4A23-A1E6-E5E490A945CB}.Debug|x86.ActiveCfg = Debug|x86
+		{0CAB8708-7AA9-4A23-A1E6-E5E490A945CB}.Debug|x86.Build.0 = Debug|x86
+		{0CAB8708-7AA9-4A23-A1E6-E5E490A945CB}.Release|x86.ActiveCfg = Debug|x86
+		{0CAB8708-7AA9-4A23-A1E6-E5E490A945CB}.Release|x86.Build.0 = Debug|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

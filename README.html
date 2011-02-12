@@ -1,0 +1,262 @@
+<html>
+<head><title>KiloWatt Animation Library</title></head>
+<body style='width: 620px; padding-left: 20px;'>
+<h2>KiloWatt Animation Library README</h2>
+<p>Copyright &copy; 2008-2011 Jon Watte. All rights reserved.</p>
+<p>
+The second half of this file contains a programmer's introduction to 
+KiloWatt Animation. Please read the entire file!
+</p><p>
+Change List
+<ul>
+<li>2011-02-12: Updated to XNA 4.0. Re-hosted on GitHub.</li>
+</ul>
+</p><p>
+The KiloWatt Animation code is released under the MIT open source 
+license, and you can use it free of charge in any project (commercial 
+or not) provided that the license is followed. The license is 
+included in this directory in a file called LICENSE.txt. The artwork 
+is NOT licensed for further distribution (except for the .fx files, 
+which count as code), and you can NOT re-use the art in your own project. 
+If you want to purchase copies of the art for use in your game, 
+the models come from http://www.3dbud.com/ and have been 
+modified and exported from 3ds Max using kW X-port.
+</p><p>
+This directory contains animation classes that will let 
+you animate both non-skinned and skinned objects built in 
+3ds Max and exported with the kW X-port plug-in. The classes may 
+also work with other animated meshes, such as Fbx files, or .X files 
+from other sources, but this has not been thoroughly tested.
+</p><p>
+The contents of the folder is as follows:
+</p>
+<ul>
+<li>Pipeline
+  <ul>
+  <li>AnimationProcessor
+    <ul>
+    <li>The content processor you need to use for importing animated 
+      meshes. Add a reference to the Pipeline project to the References 
+      part of the Content project in your solution.</li>
+    <li>This processor reduces the animation key set based on a quality 
+      measurement that you can tweak. Combined with the ability of 
+      the runtime classes to interpolate between keyframes, this can 
+      lead to enormous size savings compared to the XNA sample 
+      animation components.</li>
+    <li>Contains source for the Dxt5ModelProcessor that the 
+      AnimationProcessor is based on. This processor fixes a bug in 
+      the base ModelProcessor where DXT textures with full transparency 
+      are made all black.</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>AnimationViewer
+<ul>
+<li>A simple test application that uses KiloWatt animation to show 
+  and animate a mesh that you can select (a few meshes are included).
+  </li>
+</ul>
+</li>
+<li>Animation
+  <ul>
+  <li>Animation
+    <ul>
+    <li>The classes that implement runtime animation. These classes 
+      support simple animation blending and compositing, as well as 
+      interpolation between keyframes (great for slow-motion, or 
+      reduced data streams).</li>
+    </ul>
+  </li>
+    <li>Graphics
+      <ul>
+        <li>Contains some utility classes for drawing graphics. Specifically 
+          tuned to use shaders similar to the "model.fx" shader included 
+          with the animation viewer. (EffectConfig and DrawDetails)</li>
+      </ul>
+    </li>
+    <li>Input
+      <ul>
+      <li>Not used in the animation project; used by the AnimationViewer.</li>
+      </ul>
+    </li>
+    <li>Lzma
+      <ul>
+      <li>A quick and dirty port of the LZMA compression algorithm to XNA. 
+      This algorithm is found in the 7zip archive utility, and compresses 
+      data better than the traditional "gzip" or "zip" methods.</li>
+      </ul>
+    </li>
+    <li>Physics
+      <ul>
+      <li>Not used in the animation project; supports the Dxt5ModelProcessor.</li>
+      </ul>
+    </li>
+    <li>Properties
+      <ul>
+      <li>Properties for the KiloWatt.Animation assembly.</li>
+      </ul>
+    </li>
+  </ul>
+</li>
+<li>KiloWatt.sln
+  <ul>
+  <li>The solution file to build the AnimationViewer and the processors.</li>
+  </ul>
+</li>
+</ul>
+<h2>Using KiloWatt Animation in your project</h2>
+<p> 
+To use KiloWatt Animation in your project, you need to do the following:
+</p>
+<ol>
+<li>Add KiloWatt\Animation\Animation.csproj to your solution.</li>
+<li>Add KiloWatt\Pipeline\Pipeline.csproj to your solution.</li>
+   solution.</li>
+<li>Find the "Content" project in your main project. Right-click on the 
+    References folder of that project and choose "Add Reference...". 
+    From the "Project" tab, choose "Pipeline."</li>
+</ol>
+</p><p>
+Now, you can add .X files (and, presumably, .FBX files) to your Content 
+project, <b>and select the "Animation Processor - KiloWatt" as the content 
+processor for that mesh</b>. When the mesh is built, any animation is 
+extracted and added to the Tag dictionary of the Model. Here are the settings 
+used for the archer.x model:
+</p>
+<img src='content-settings.png' />
+<p>
+The ForceShader and ForceShaderSkinned settings, respectively, allow you to 
+specify a specific effect file to use for the parts of the model that are 
+not skinned, or skinned, respectively. If the name starts with a "+" sign, 
+then the rest of the name will be added to the existing effect name, instead 
+of the effect name entirely replaced. Thus, the archer is modeled in 3ds Max 
+using the "diffuseonly.fx" effect, but the built file will reference the 
+effect "diffuseonly-skinned.fx". ForceShader also allows you to specify a 
+given shader for materials that don't originally use shaders.
+</p><p>
+SampleRate sets the rate at which to sample each imported animation. This 
+allows you to determine what level of precision you want, although higher 
+sampling rates will use more disk and memory space. The processor will run 
+keyframe reduction on the animation data, removing keyframes that are the 
+same as the interpolated value between the two neighbors. This saves 
+considerable space! There is some loss of quality allowed in this process; 
+how much loss you allow is specified with Tolerance. "1" is a pretty large 
+number for loss; "0.001" is intended to be imperceptible loss. "0" will not 
+accept any quality loss in keyframe reduction, and will result in somewhat 
+larger animation files (but still a lot smaller than the matrix based 
+animation libraries.)
+</p><p>
+After you have loaded the model with Content.Load<Model>("your model"), 
+you can get a Dictionary<string, object> from the Tag of the Model, and 
+get an AnimationSet (named "AnimationSet") from that dictionary. The 
+AnimationSet contains a collection of Animations. Each Animation will 
+affect all the animated bones in the Model, based on time.
+</p><p>
+To use an Animation, you create an AnimationInstance. The AnimationInstance 
+actually has a concept of "current time," as well as a concept of "speed" 
+that lets you scale the animation to play faster or slower than normal. 
+This is useful, for example, for walking and running animations. The 
+simplest usage of AnimationInstance is to create one with a given Animation 
+as argument, then call Advance(gameTime.ElapsedGameTime.TotalSeconds) each 
+Update() call, and call CopyPoseTo() to copy the (parent-relative) bone 
+poses into the Model inside Draw().
+</p><p>
+Then draw the model as animated, first calling Model.CopyAbsoluteBoneTransformsTo 
+to extract the world-relative matrices, and then looping through each 
+ModelMesh, setting the World matrix, and drawing the mesh (this is the same 
+as for the animation sample, and pretty much any other Model drawing sample 
+that doesn't use the simple Model.Draw() function).
+</p><p>
+A simple way of doing this is to use the ModelDraw class in KiloWatt.Base.Graphics. 
+You can create one of these per model you want to draw, and then call Draw() on it 
+to draw. This will also remember transparent parts of the mesh (based on annotations 
+on the shader) and draw those sorted, last, when you call ModelDraw.DrawDeferred(). 
+</p><p>
+The ModelDraw class uses the EffectConfig class, also from KiloWatt.Base.Graphics. 
+This class collaborates with the DrawDetails description class to set up shaders 
+that are configured in a common way, implemented by the sample shaders included in 
+the distribution. Sample shaders include:
+</p>
+<center>
+<table>
+<tr><th>shader</th><th>description</th></tr>
+<tr><td>diffuseonly.fx</td><td>Render a model with a diffuse texture, using per-
+pixel phong shading. You can configure a fog distance and a single directional 
+light.</td></tr>
+<tr><td>diffuseonly-skinned.fx</td><td>Same as diffuseonly.fx, but additionally calculate 
+mesh skinning in the vertex shader based on a bone pose.</td></tr>
+<tr><td>diffusexparent.fx</td><td>Render a model with a diffuse texture, using per-
+pixel phong shading. You can configure a fog distance and a single directional 
+light. This shader uses the alpha of the diffuse texture for blending, and marks 
+the technique as transparent-sorted for EffectConfig to use.</td></tr>
+<tr><td>diffusexparent-skinned.fx</td><td>Same as diffusexparent.fx with skinning added.</td></tr>
+<tr><td>model.fx</td><td>Render a model with diffuse color mapping, tangent-space 
+normal mapping (requires tangents to be exported from 3ds Max or similar), and gloss 
+mapping (RGB for reflectivity, A for glossiness). Lets you specify fog distance and 
+a single directional light.</td></tr>
+</table>
+</center>
+<p>
+See the AnimationViewer sample for more usage examples.
+</p><p>
+A more advanced way of using the library involves using the AnimationBlender 
+class, which will blend some number of animations at the same time, and keep 
+them all progressing in time. You can smoothly blend over time from one 
+animation to the next using TransitionAnimations(), or you can manually add 
+some number of animations and change their weights over time. There are two 
+kinds of animation blending: NormalizedBlend and Compose. First, all animations 
+with NormalizedBlend mode are blended together, to a normalized "1.0" weight. 
+Then, each Compose animation is added into the animation, with the weight 
+given by its IBlendedAnimation instance.
+</p><p>
+The AnimationProcessor has some number of properties you may want to set. 
+Chief among them is the ForceDXT5 property, which will force all textures to 
+DXT5 format. There is also the DoAnimations property, which when false, causes 
+no animations to be processed (convenient for debugging).
+The ExcludeAnimations and ExcludeBones properties work more or less the same 
+way; they are semicolon separated lists of regular expressions that will match 
+the names of of animations or bones to exclude from the animation set, respectively.
+There should be no spaces between the semicolons and the data. Note that these 
+regular expressions are implicitly anchored to the beginning/end of the name, 
+so if you want to match a substring, you have to use ".*" at beginning and end.
+</p><p>
+For example, if your file contains the three animations called "Run," "Jump" 
+and "Idle," and you wanted to include only the "Idle" animation, you would set 
+the "ExcludeAnimations" property to "Run;Jump" (or, for that matter, 
+"Jump;Run"). Without the double quotes, of course :-)
+</p><p>
+The animation processor will currently generate two "special" animations, called 
+"$id$" and "$bind$." The $id$ animation sets all the animated matrices to the 
+identity matrix, which ends up putting all bones unrotated at the origin. The 
+"$bind$" animation sets all bones to their initial bind pose, so the model will 
+end up posed the way it was in the DCC tool.
+</p><p>
+The included art is NOT licensed under the MIT license. Especially the archer.x 
+file is covered by a license that does not allow re-use outside of this current 
+download. Please respect intellectual property rights of the artists who made 
+the mesh and textures included. Also note that the original textures came in 
+larger resolutions, but I have scaled them down to lower quality to avoid too 
+large a download.
+</p><p>
+A screen shot of the settings used for kW X-port in 3ds Max when exporting the
+archer mesh is included here:
+</p>
+<img src='archer-export.png' />
+<p>
+The shader materials were set up in 3ds Max using the DirectX Material, which is 
+only available when you're using the Direct3D viewport manager. Also note that 
+the fog settings need to be turned up a lot from the default setting, to avoid 
+getting an all gray mesh.
+</p>
+<img src='archer-material.png' />
+<p>
+For help with the KiloWatt Animation Library and possible future releases, you can 
+sign up for the forums at <a href='http://www.enchantedage.com/node/24'>http://www.enchantedage.com/node/24</a>.
+</p><p>
+For help with the kW X-port art files, please join up the SourceForge KiloWatt forum at 
+<a href='http://www.kwxport.org/'>http://www.kwxport.org/</a>.
+</p>
+</body>
+</html>
+

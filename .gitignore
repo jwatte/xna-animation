@@ -1,0 +1,12 @@
+bin
+obj
+Win32
+Xbox 360
+Debug
+Release
+*.obj
+*.pdb
+*.ilk
+*.suo
+*.cachefile
+*.log
